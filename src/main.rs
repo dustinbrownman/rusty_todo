@@ -55,9 +55,12 @@ impl Todo {
         self.map.insert(key, true);
     }
 
-    fn complete(&mut self, key: &String) -> Option<()> {
+    fn complete(&mut self, key: &str) -> Option<()> {
         match self.map.get_mut(key) {
-            Some(value) => Some(*value = false),
+            Some(value) => {
+                *value = false;
+                Some(())
+            },
             None => None,
         }
     }
