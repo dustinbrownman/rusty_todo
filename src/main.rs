@@ -3,22 +3,29 @@ use std::env::args;
 
 fn main() {
     let action = args().nth(1).expect("Please specify an action");
-    let item = args().nth(2).expect("Please specify an item");
+    let possible_item = args().nth(2);
 
     let mut todo = Todo::new().expect("Initialization of db failed");
     if action == "add" {
+        let item = possible_item.expect("Please specify an item");
         todo.insert(item);
         match todo.save() {
             Ok(_) => println!("todo saved"),
             Err(why) => println!("An error occurred: {}", why),
         }
     } else if action == "complete" {
+        let item = possible_item.expect("Please specify an item");
         match todo.complete(&item) {
             None => println!("{} not found in the list", item),
             Some(_) => match todo.save() {
                 Ok(_) => println!("'{}' complete", &item),
                 Err(why) => println!("An error occurred: {}", why),
             },
+        }
+    } else if action == "list" {
+        for (action, needs_doing) in todo.map {
+            let check = if needs_doing { "[ ]" } else { "[X]" };
+            println!("{} {}", check, action);
         }
     }
 }
